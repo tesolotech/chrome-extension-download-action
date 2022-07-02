@@ -1,41 +1,34 @@
 
-chrome.downloads.onCreated.addListener(
+const urlPatternRegex = [
+    "*unsplash.com",
+    "*google.com",
+    "www.facebook.com*",
+    "*flipcart.com*"
+];
+
+function isURLMatchPatter(url) {
+    let result = false;
+    for (let i = 0; i < urlPatternRegex.length; i++) {
+        const regex = '/' + urlPatternRegex[i] + '/'
+        const urlPattern = new RegExp(regex)
+        result = urlPattern.test(url);
+        if (result) {
+            return result;
+        }
+    }
+    return result;
+}
+
+
+chrome.downloads.onDeterminingFilename.addListener(
     (data) => {
 
         console.log('Downlod-file-data', data);
-        fetch('https://jsonplaceholder.typicode.com/todos/1')
-            .then(response => response.json())
-            .then(json => console.log('json-data', json))
+        if (isURLMatchPatter(data['url'])) { // referrer
+            fetch('https://jsonplaceholder.typicode.com/todos/1')
+                .then(response => response.json())
+                .then(json => console.log('json-data', json))
+        }
+
     }
 )
-
-
-
-
-
-
-
-// let isAllow = false;
-
-
-// chrome.storage.sync.set({ key: false });
-
-// chrome.storage.sync.get(['key'], function (result) {
-//     // console.log('Value currently is ' + result.key);
-//     isAllow = result.key;
-// });
-
-
-// if (isAllow) {
-
-// chrome.downloads.onCreated.addListener(
-//     (data) => {
-
-//         console.log('Downlod-file-data', data);
-//         fetch('https://jsonplaceholder.typicode.com/todos/1')
-//             .then(response => response.json())
-//             .then(json => console.log(json))
-//     }
-// )
-// }
-
